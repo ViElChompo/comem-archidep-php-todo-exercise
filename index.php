@@ -44,8 +44,16 @@ if (isset($_POST['action'])) {
 
       $id = $_POST['id'];
       if (is_numeric($id)) {
-        $updateQuery = ''; // IMPLEMENT ME
-        if (!$db->query($updateQuery)) {
+
+        $currentStatusQuery = 'SELECT done FROM todo WHERE id = '.$id;
+        $result = $db->query($currentStatusQuery);
+        $currentStatus = $result->fetch(PDO::FETCH_ASSOC)['done'];
+    
+        $newStatus = $currentStatus ? 0 : 1;
+    
+        $updateQuery = 'UPDATE todo SET done = '.$newStatus.' WHERE id = '.$id;
+
+       if (!$db->query($updateQuery)) {
           die(print_r($db->errorInfo(), true));
         }
       }
@@ -77,7 +85,7 @@ if (isset($_POST['action'])) {
 /**
  * Select all tasks from the database.
  */
-$selectQuery = 'SELECT * FROM todo ORDER BY created_at DESC'; // IMPLEMENT ME
+$selectQuery = 'SELECT * FROM todo ORDER BY created_at DESC'; 
 $items = $db->query($selectQuery);
 ?>
 
